@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:store_redirect/store_redirect.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,11 +22,13 @@ class MyApp extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  Future<void> _launchUrl() async {
-    StoreRedirect.redirect(
-      androidAppId: "br.com.leftbank",
-      iOSAppId: "6444623738",
-    );
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Não foi possível lançar a URL $url';
+    }
   }
 
   @override
@@ -87,17 +89,19 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                          onTap: () => _launchUrl(),
+                          onTap: () => _launchUrl(
+                              "https://apps.apple.com/br/app/id6444623738"),
                           child: SvgPicture.asset(
-                            'assets/app_store.svg', // SVG for App Store logo
+                            'assets/app_store.svg', // SVG do logo da App Store
                             height: 50,
                           ),
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(
-                          onTap: () => _launchUrl(),
+                          onTap: () => _launchUrl(
+                              "https://play.google.com/store/apps/details?id=br.com.leftbank"),
                           child: SvgPicture.asset(
-                            'assets/google_play.svg', // SVG for Google Play logo
+                            'assets/google_play.svg', // SVG do logo do Google Play
                             height: 50,
                           ),
                         ),
